@@ -1,6 +1,6 @@
-import LogEvent from './LogEvent';
+import LogEvent from "./LogEvent";
 
-type LogLevel = 'debug' | 'info' | 'warn' | 'error';
+type LogLevel = "debug" | "info" | "warn" | "error";
 type Bag = { [propName: string]: any };
 
 export type LogDelegate = (logEvents: LogEvent[]) => Promise<void>;
@@ -24,7 +24,9 @@ export default class Logger {
     try {
       await this.logDelegate(logEvents);
     } catch (e) {
-      console.error('Error occurred while attempting to log events to logging system:');
+      console.error(
+        "Error occurred while attempting to log events to logging system:"
+      );
       console.error(e);
     }
   }
@@ -38,20 +40,27 @@ export default class Logger {
    * @returns `Promise` for completing the async action.
    */
   async log(message: string, logLevel: LogLevel, logData?: Bag): Promise<void> {
-    const eventMessage = Object.assign({ message, logLevel, loggerName: this.loggerName }, logData);
+    const eventMessage = Object.assign(
+      { message, logLevel, loggerName: this.loggerName },
+      logData
+    );
 
-    await this.logEvents([{
-      timestamp: new Date().getTime(),
-      message: JSON.stringify(eventMessage),
-    }]);
+    await this.logEvents([
+      {
+        timestamp: new Date().getTime(),
+        message: JSON.stringify(eventMessage),
+      },
+    ]);
   }
 
   customMetric(name: string, description: string, value: number): void {
-    console.log(JSON.stringify({
-      name,
-      description,
-      value,
-      service: 'logs-service',
-    }));
+    console.log(
+      JSON.stringify({
+        name,
+        description,
+        value,
+        service: "logs-service",
+      })
+    );
   }
 }
