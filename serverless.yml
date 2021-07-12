@@ -2,7 +2,8 @@ service: cvs-svc-app-logs
 
 provider:
   name: aws
-  runtime: nodejs8.10
+  runtime: nodejs14.x
+  lambdaHashingVersion: "20201221"
 
 package:
   individually: true
@@ -12,12 +13,12 @@ functions:
     handler: src/functions/postLogs/framework/handler.handler
     events:
       - http:
-          path: 'logs'
+          path: "logs"
           method: post
 
 custom:
   webpack:
-    webpackConfig: 'webpack-sls-offline.config.js'
+    webpackConfig: "webpack-sls-offline.config.js"
 
 plugins:
   - serverless-webpack
