@@ -36,3 +36,4 @@ To run the unit tests, simply run:
 ```shell
 npm test
 ```
+Please refer to the the [docs](./docs/README.md) for the API specification and samples of postman requests.
