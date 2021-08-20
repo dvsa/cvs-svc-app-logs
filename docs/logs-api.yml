@@ -1,0 +1,70 @@
+openapi: 3.0.0
+info:
+  description: >-
+    This is the API spec for the logging service. The purpose of this
+    microservice is to record the logs of the events captured in the App.
+  version: 1.0.0
+  title: Logs Microservice
+  termsOfService: ''
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+tags:
+  - name: logs
+    description: Endpoint used to record the logs of the events captured in the App.
+    externalDocs:
+      description: Find out more
+      url: 'https://wiki.i-env.net/display/HVT/Epic%3A+App+Analytics'
+paths:
+  /logs:
+    post:
+      summary: Record the logs
+      tags:
+        - logs
+      requestBody:
+        required: true
+        content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/logs'
+      responses:
+        '201':
+          description: Logs created
+        '401':
+          description: Not authenticated
+        '500':
+          description: Internal error
+        '400':
+          description: Bad request
+components:
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: 'https://example.com/oauth/authorize'
+          tokenUrl: 'https://example.com/oauth/token'
+          scopes:
+            read: Grants read access
+            write: Grants write access
+  schemas:
+    logs:
+      type: array
+      items:
+        $ref: '#/components/schemas/log'
+    log:
+      type: object
+      properties:
+        timestamp:
+          type: number
+        message:
+          type: string
+        type:
+          type: string
+security:
+  - ApiKeyAuth: []
+  - OAuth2:
+      - read
+      - write
+servers:
+  - url: 'https://url/api/v1'

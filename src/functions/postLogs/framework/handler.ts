@@ -1,16 +1,22 @@
-import { APIGatewayProxyEvent, Context } from 'aws-lambda';
-import createResponse from '../../../common/application/utils/createResponse';
-import Response from '../../../common/application/api/Response';
-import Logger from '../application/Logger';
-import LogMessage from './LogMessage';
-import transformLogMessages from './transformLogMessages';
-import { createLogger } from './createLogger';
+import { APIGatewayProxyEvent, Context } from "aws-lambda";
+import createResponse from "../../../common/application/utils/createResponse";
+import Response from "../../../common/application/api/Response";
+import Logger from "../application/Logger";
+import LogMessage from "./LogMessage";
+import transformLogMessages from "./transformLogMessages";
+import { createLogger } from "./createLogger";
 
 let logger: Logger | null = null;
 
-export async function handler(event: APIGatewayProxyEvent, fnCtx: Context): Promise<Response> {
+export async function handler(
+  event: APIGatewayProxyEvent,
+  fnCtx: Context
+): Promise<Response> {
   if (logger === null) {
-    logger = await createLogger('LogsServiceLogger', process.env.MOBILE_APP_LOGS_CWLG_NAME);
+    logger = await createLogger(
+      "LogsServiceLogger",
+      process.env.MOBILE_APP_LOGS_CWLG_NAME
+    );
   }
 
   if (event.body) {
@@ -19,13 +25,19 @@ export async function handler(event: APIGatewayProxyEvent, fnCtx: Context): Prom
     const numOfLogEvents = logEvents.length;
 
     await logger.logEvents(logEvents);
-    logger.customMetric('LogsPosted', 'Number of logs posted', numOfLogEvents);
-    return createResponse({ message: `${numOfLogEvents} log messages were received and saved.` });
+    logger.customMetric("LogsPosted", "Number of logs posted", numOfLogEvents);
+    return createResponse({
+      message: `${numOfLogEvents} log messages were received and saved.`,
+    });
   }
 
   return createResponse(
-    { message: 'Bad Request: request body should contain JSON array of log messages.' },
-    400);
+    {
+      message:
+        "Bad Request: request body should contain JSON array of log messages.",
+    },
+    400
+  );
 }
 
 /**
