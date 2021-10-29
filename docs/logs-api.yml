@@ -5,16 +5,16 @@ info:
     microservice is to record the logs of the events captured in the App.
   version: 1.0.0
   title: Logs Microservice
-  termsOfService: ''
+  termsOfService: ""
   license:
     name: Apache 2.0
-    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
 tags:
   - name: logs
     description: Endpoint used to record the logs of the events captured in the App.
     externalDocs:
       description: Find out more
-      url: 'https://wiki.i-env.net/display/HVT/Epic%3A+App+Analytics'
+      url: "https://wiki.i-env.net/display/HVT/Epic%3A+App+Analytics"
 paths:
   /logs:
     post:
@@ -24,17 +24,17 @@ paths:
       requestBody:
         required: true
         content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/logs'
+          application/json:
+            schema:
+              $ref: "#/components/schemas/logs"
       responses:
-        '201':
+        "201":
           description: Logs created
-        '401':
+        "401":
           description: Not authenticated
-        '500':
+        "500":
           description: Internal error
-        '400':
+        "400":
           description: Bad request
 components:
   securitySchemes:
@@ -42,8 +42,8 @@ components:
       type: oauth2
       flows:
         authorizationCode:
-          authorizationUrl: 'https://example.com/oauth/authorize'
-          tokenUrl: 'https://example.com/oauth/token'
+          authorizationUrl: "https://example.com/oauth/authorize"
+          tokenUrl: "https://example.com/oauth/token"
           scopes:
             read: Grants read access
             write: Grants write access
@@ -51,7 +51,7 @@ components:
     logs:
       type: array
       items:
-        $ref: '#/components/schemas/log'
+        $ref: "#/components/schemas/log"
     log:
       type: object
       properties:
@@ -67,4 +67,4 @@ security:
       - read
       - write
 servers:
-  - url: 'https://url/api/v1'
+  - url: "https://url/api/v1"
