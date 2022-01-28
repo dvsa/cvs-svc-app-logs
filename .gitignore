@@ -21,3 +21,6 @@ artefacts
 .dynamodb/
 .serverless/
 .nyc_output/
+
+# Idea specific hidden files
+.idea/**
