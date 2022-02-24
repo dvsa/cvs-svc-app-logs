@@ -12,7 +12,7 @@ export const startSlsOffline = (done: any) => {
   );
 
   slsOfflineProcess.stdout.on("data", (data) => {
-    if (data.includes("Offline listening on")) {
+    if (data.includes("[HTTP] server ready: http://localhost:3000")) {
       console.log(data.toString().trim());
       done();
     }

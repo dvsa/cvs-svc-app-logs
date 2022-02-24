@@ -1,99 +1,80 @@
 {
-	"info": {
-		"_postman_id": "d6dcfad1-6f61-498f-b296-16463940d647",
-		"name": "logs",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-	},
-	"item": [
-		{
-			"name": "logs",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "[\n  {\n    \"type\": \"info\",\n    \"message\": \"8pfn1uvlx - API call to \",\n    \"timestamp\": 1596545775030\n  }\n]"
-				},
-				"url": {
-					"raw": "https://api.{{api}}.cvs.dvsacloud.uk/{{branch}}/logs",
-					"protocol": "https",
-					"host": [
-						"api",
-						"{{api}}",
-						"cvs",
-						"dvsacloud",
-						"uk"
-					],
-					"path": [
-						"{{branch}}",
-						"develop",
-						"logs"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "unauth-logs",
-			"request": {
-				"auth": {
-					"type": "apikey",
-					"apikey": [
-						{
-							"key": "in",
-							"value": "header",
-							"type": "string"
-						},
-						{
-							"key": "value",
-							"value": "{{api_key}}",
-							"type": "string"
-						},
-						{
-							"key": "key",
-							"value": "x-api-key",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "https://api.{{api}}.cvs.dvsacloud.uk/{{branch}}/unauth-logs",
-					"protocol": "https",
-					"host": [
-						"api",
-						"{{api}}",
-						"cvs",
-						"dvsacloud",
-						"uk"
-					],
-					"path": [
-						"{{branch}}",
-						"unauth-logs"
-					]
-				}
-			},
-			"response": []
-		}
-	]
+  "info": {
+    "_postman_id": "d6dcfad1-6f61-498f-b296-16463940d647",
+    "name": "logs",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "logs",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "[\n  {\n    \"type\": \"info\",\n    \"message\": \"8pfn1uvlx - API call to \",\n    \"timestamp\": 1596545775030\n  }\n]"
+        },
+        "url": {
+          "raw": "https://api.{{api}}.cvs.dvsacloud.uk/{{branch}}/logs",
+          "protocol": "https",
+          "host": ["api", "{{api}}", "cvs", "dvsacloud", "uk"],
+          "path": ["{{branch}}", "develop", "logs"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "unauth-logs",
+      "request": {
+        "auth": {
+          "type": "apikey",
+          "apikey": [
+            {
+              "key": "in",
+              "value": "header",
+              "type": "string"
+            },
+            {
+              "key": "value",
+              "value": "{{api_key}}",
+              "type": "string"
+            },
+            {
+              "key": "key",
+              "value": "x-api-key",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://api.{{api}}.cvs.dvsacloud.uk/{{branch}}/unauth-logs",
+          "protocol": "https",
+          "host": ["api", "{{api}}", "cvs", "dvsacloud", "uk"],
+          "path": ["{{branch}}", "unauth-logs"]
+        }
+      },
+      "response": []
+    }
+  ]
 }
