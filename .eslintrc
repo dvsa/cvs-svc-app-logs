@@ -34,6 +34,7 @@
     "jest/no-identical-title": "off",
     "jest/no-done-callback": "off",
     "jest/no-jasmine-globals": "off",
+    "jest/prefer-to-have-length": "off",
     "security/detect-child-process": "off",
     "security/detect-object-injection": "off",
     "security/detect-unsafe-regex": "off",

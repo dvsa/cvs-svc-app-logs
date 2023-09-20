@@ -12,7 +12,7 @@ describe('transformLogMessages', () => {
     const result: LogEvent[] = await sut(input);
 
     // ASSERT
-    expect(result).toHaveLength(1);
+    expect(result.length).toBe(1);
   });
 
   it('should transform array of log messages in to another array of same length', async () => {
@@ -22,7 +22,7 @@ describe('transformLogMessages', () => {
     const result: LogEvent[] = await sut(input);
 
     // ASSERT
-    expect(result).toHaveLength(3);
+    expect(result.length).toBe(3);
   });
 
   it('input timestamp is optional, and should get set if not supplied', async () => {
@@ -67,7 +67,7 @@ describe('transformLogMessages', () => {
     const result: LogEvent[] = await sut(input);
 
     // ASSERT
-    expect(result).toHaveLength(10);
+    expect(result.length).toBe(10);
 
     expect(result[0].message).toMatch(/hello world/);
     expect(result[1].message).toMatch(/hello world again/);

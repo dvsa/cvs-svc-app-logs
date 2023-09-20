@@ -10,7 +10,7 @@ let logger: Logger | null = null;
 
 export async function handler(
   event: APIGatewayProxyEvent,
-  fnCtx: Context
+  _fnCtx: Context
 ): Promise<Response> {
   if (logger === null) {
     logger = await createLogger(

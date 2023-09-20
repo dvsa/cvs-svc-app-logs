@@ -1,14 +1,30 @@
 {
   "compilerOptions": {
-    "outDir": "./build",
-    "strict": true,
-    "allowJs": false,
-    "sourceMap": true,
     "lib": ["es2017", "dom"],
+    "removeComments": true,
+    "moduleResolution": "node",
+    "module": "commonjs",
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "sourceMap": true,
     "target": "es5",
-    "types": ["node", "jasmine"],
+    "outDir": "./build",
+    "rootDir": "./",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
     "experimentalDecorators": true
   },
   "include": ["./src/**/*", "./spec/**/*"],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules/**/*",
+    ".serverless/**/*",
+    ".webpack/**/*",
+    ".build/**/*",
+    ".artifact/**/*",
+    "_warmup/**/*",
+    ".vscode/**/*",
+    "reports/**/*"
+  ]
 }
