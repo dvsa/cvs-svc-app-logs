@@ -1,0 +1,48 @@
+{
+  "extends": ["@dvsa/eslint-config-ts"],
+  "settings": {
+    "import/resolver": {
+      "typescript": {
+        "alwaysTryTypes": true
+      }
+    }
+  },
+  "rules": {
+    "@typescript-eslint/no-unsafe-call": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-unsafe-assignment": "off",
+    "@typescript-eslint/no-unsafe-argument": "off",
+    "@typescript-eslint/no-unsafe-return": "off",
+    "@typescript-eslint/no-unused-vars": "off",
+    "@typescript-eslint/no-unsafe-member-access": "off",
+    "@typescript-eslint/no-floating-promises": "off",
+    "@typescript-eslint/ban-ts-comment": "off",
+    "@typescript-eslint/no-redeclare": "off",
+    "@typescript-eslint/restrict-template-expressions": "off",
+    "@typescript-eslint/await-thenable": "off",
+    "@typescript-eslint/no-var-requires": "off",
+    "@typescript-eslint/comma-dangle": "off",
+    "@typescript-eslint/unbound-method": "off",
+    "@typescript-eslint/ban-types": "off",
+    "@typescript-eslint/no-misused-promises": "off",
+    "@typescript-eslint/require-await": "off",
+    "@typescript-eslint/no-throw-literal": "off",
+    "@typescript-eslint/no-redundant-type-constituents": "off",
+    "import/no-import-module-exports": "off",
+    "import/no-extraneous-dependencies": "off",
+    "jest/no-conditional-expect": "off",
+    "jest/no-identical-title": "off",
+    "jest/no-done-callback": "off",
+    "jest/no-jasmine-globals": "off",
+    "security/detect-child-process": "off",
+    "security/detect-object-injection": "off",
+    "security/detect-unsafe-regex": "off",
+    "consistent-return": "off",
+    "global-require": "off",
+    "no-underscore-dangle": "off",
+    "no-restricted-syntax": "off",
+    "no-await-in-loop": "off",
+    "prefer-promise-reject-errors": "off",
+    "implicit-arrow-linebreak": "off"
+  }
+}

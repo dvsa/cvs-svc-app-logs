@@ -1,10 +1,11 @@
-import LogEvent from "../application/LogEvent";
-import LogMessage from "./LogMessage";
+import LogEvent from '../application/LogEvent';
+import LogMessage from './LogMessage';
 
 export default function transformLogMessages(
   logMessages: LogMessage[] | LogMessage
 ): LogEvent[] {
   return (
+    // eslint-disable-next-line no-nested-ternary
     logMessages
       ? Array.isArray(logMessages)
         ? logMessages
@@ -15,8 +16,8 @@ export default function transformLogMessages(
 
     if (logMessage !== null && logMessage !== undefined) {
       if (logMessage.timestamp === null || logMessage.timestamp === undefined) {
-        if (typeof logMessage === "object") {
-          logMessage["timestampProvidedByLogService"] = true;
+        if (typeof logMessage === 'object') {
+          logMessage.timestampProvidedByLogService = true;
         }
       } else {
         timestamp = logMessage.timestamp;

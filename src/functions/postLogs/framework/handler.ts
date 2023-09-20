@@ -1,10 +1,10 @@
-import { APIGatewayProxyEvent, Context } from "aws-lambda";
-import createResponse from "../../../common/application/utils/createResponse";
-import Response from "../../../common/application/api/Response";
-import Logger from "../application/Logger";
-import LogMessage from "./LogMessage";
-import transformLogMessages from "./transformLogMessages";
-import { createLogger } from "./createLogger";
+import { APIGatewayProxyEvent, Context } from 'aws-lambda';
+import createResponse from '../../../common/application/utils/createResponse';
+import Response from '../../../common/application/api/Response';
+import Logger from '../application/Logger';
+import LogMessage from './LogMessage';
+import transformLogMessages from './transformLogMessages';
+import { createLogger } from './createLogger';
 
 let logger: Logger | null = null;
 
@@ -14,7 +14,7 @@ export async function handler(
 ): Promise<Response> {
   if (logger === null) {
     logger = await createLogger(
-      "LogsServiceLogger",
+      'LogsServiceLogger',
       process.env.MOBILE_APP_LOGS_CWLG_NAME
     );
   }
@@ -25,7 +25,7 @@ export async function handler(
     const numOfLogEvents = logEvents.length;
 
     await logger.logEvents(logEvents);
-    logger.customMetric("LogsPosted", "Number of logs posted", numOfLogEvents);
+    logger.customMetric('LogsPosted', 'Number of logs posted', numOfLogEvents);
     return createResponse({
       message: `${numOfLogEvents} log messages were received and saved.`,
     });
@@ -34,7 +34,7 @@ export async function handler(
   return createResponse(
     {
       message:
-        "Bad Request: request body should contain JSON array of log messages.",
+        'Bad Request: request body should contain JSON array of log messages.',
     },
     400
   );

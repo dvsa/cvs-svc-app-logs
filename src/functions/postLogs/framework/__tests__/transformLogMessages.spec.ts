@@ -1,31 +1,31 @@
-import transformLogMessages from "../transformLogMessages";
-import LogMessage from "../LogMessage";
-import LogEvent from "../../application/LogEvent";
+import transformLogMessages from '../transformLogMessages';
+import LogMessage from '../LogMessage';
+import LogEvent from '../../application/LogEvent';
 
-describe("transformLogMessages", () => {
+describe('transformLogMessages', () => {
   const sut = transformLogMessages;
 
-  it("should transform single log message in to a single element array", async () => {
+  it('should transform single log message in to a single element array', async () => {
     const input: LogMessage = { test: 1234 };
 
     // ACT
     const result: LogEvent[] = await sut(input);
 
     // ASSERT
-    expect(result.length).toEqual(1);
+    expect(result).toHaveLength(1);
   });
 
-  it("should transform array of log messages in to another array of same length", async () => {
+  it('should transform array of log messages in to another array of same length', async () => {
     const input: LogMessage[] = [{}, {}, {}];
 
     // ACT
     const result: LogEvent[] = await sut(input);
 
     // ASSERT
-    expect(result.length).toEqual(3);
+    expect(result).toHaveLength(3);
   });
 
-  it("input timestamp is optional, and should get set if not supplied", async () => {
+  it('input timestamp is optional, and should get set if not supplied', async () => {
     const input: LogMessage[] = [{}];
 
     // ACT
@@ -38,28 +38,28 @@ describe("transformLogMessages", () => {
     expect(result[0].message).toMatch(/timestampProvidedByLogService.?:.?true/);
   });
 
-  it("input timestamp should not get overridden when supplied", async () => {
+  it('input timestamp should not get overridden when supplied', async () => {
     const input: LogMessage[] = [{ timestamp: 123789 }];
 
     // ACT
     const result: LogEvent[] = await sut(input);
 
     // ASSERT
-    expect(result[0].timestamp).toEqual(123789);
+    expect(result[0].timestamp).toBe(123789);
     expect(result[0].message).not.toMatch(/timestampProvidedByLogService/);
   });
 
-  it("it should JSON serialise each log message object, even when anything is supplied", async () => {
+  it('should JSON serialise each log message object, even when anything is supplied', async () => {
     const input: LogMessage[] = [
-      { timestamp: 1234, message: "hello world" },
-      { timestamp: 1234, message: "hello world again" },
+      { timestamp: 1234, message: 'hello world' },
+      { timestamp: 1234, message: 'hello world again' },
       { timestamp: 1234, message: 123556 },
       { timestamp: 1234, message: 98765432 },
       { message: 123556 },
       {},
       <any>(<unknown>null),
-      { timestamp: 1234, message: 12345, logLevel: "info" },
-      <any>(<unknown>"hello world"),
+      { timestamp: 1234, message: 12345, logLevel: 'info' },
+      <any>(<unknown>'hello world'),
       <any>(<unknown>12345),
     ];
 
@@ -67,7 +67,7 @@ describe("transformLogMessages", () => {
     const result: LogEvent[] = await sut(input);
 
     // ASSERT
-    expect(result.length).toEqual(10);
+    expect(result).toHaveLength(10);
 
     expect(result[0].message).toMatch(/hello world/);
     expect(result[1].message).toMatch(/hello world again/);
