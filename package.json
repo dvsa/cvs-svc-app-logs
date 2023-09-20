@@ -17,13 +17,6 @@
     "node": "18.*",
     "npm": "9.*"
   },
-  "husky": {
-    "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
-      "pre-commit": "npm run security-checks && npm run audit && npm run lint:fix && npm run format",
-      "pre-push": "npm run test && npm run build && npm run test-i"
-    }
-  },
   "devDependencies": {
     "@commitlint/cli": "17.7.1",
     "@commitlint/config-conventional": "17.7.0",
@@ -82,9 +75,12 @@
     "test:integration": "npm run compile && jasmine build/spec/logs-service.spec.js",
     "compile-no-emit": "tsc --noEmit -p .",
     "sonar-scanner": "sonar-scanner",
-    "audit": "npm audit --prod",
+    "audit": "npm audit --omit=dev",
     "package": "mkdir ${ZIP_NAME} && cp package.json package-lock.json ${ZIP_NAME}/ && cp -r .build/src/* ${ZIP_NAME}/ && cd ${ZIP_NAME} && npm ci --production && rm package.json package-lock.json && zip -qr ../${ZIP_NAME}.zip .",
-    "tools-setup": "echo 'Nothing to do'"
+    "tools-setup": "echo 'Nothing to do'",
+    "precommit": "npm run security-checks && npm run audit && npm run lint && npm run format",
+    "commit-msg": "commitlint --edit $1",
+    "prepush": "npm run test && npm run build && npm run test-i"
   },
   "nyc": {
     "require": [
