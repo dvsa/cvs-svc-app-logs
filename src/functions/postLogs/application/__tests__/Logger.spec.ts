@@ -1,3 +1,4 @@
+/* eslint-disable jest/expect-expect */
 import { Mock, It, Times } from 'typemoq';
 import LogEvent from '../LogEvent';
 import Logger, { LogDelegate } from '../Logger';

@@ -1,3 +1,4 @@
+/* eslint-disable jest/expect-expect */
 import * as awsSdkMock from 'aws-sdk-mock';
 import { Mock, It, Times } from 'typemoq';
 import { CloudWatchLogs } from 'aws-sdk';

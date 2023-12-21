@@ -26,6 +26,7 @@ describe('handler', () => {
     delete process.env.MOBILE_APP_LOGS_CWLG_NAME;
   });
 
+  // eslint-disable-next-line jest/expect-expect
   it('should call `createLogger` as expected', async () => {
     handler.setLogger(null);
 

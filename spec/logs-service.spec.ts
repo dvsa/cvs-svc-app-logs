@@ -23,6 +23,7 @@ describe('integration test', () => {
     stopSlsOffline();
   });
 
+  // eslint-disable-next-line jest/expect-expect
   it('should respond 200 for a successful post', (done) => {
     request
       .post('/logs')
@@ -37,6 +38,7 @@ describe('integration test', () => {
       });
   });
 
+  // eslint-disable-next-line jest/expect-expect
   it('should respond 400 for a bad request', (done) => {
     request
       .post('/logs')
