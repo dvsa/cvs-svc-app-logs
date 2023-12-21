@@ -1,6 +1,6 @@
-import LogEvent from "./LogEvent";
+import LogEvent from './LogEvent';
 
-type LogLevel = "debug" | "info" | "warn" | "error";
+type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 type Bag = { [propName: string]: any };
 
 export type LogDelegate = (logEvents: LogEvent[]) => Promise<void>;
@@ -25,7 +25,7 @@ export default class Logger {
       await this.logDelegate(logEvents);
     } catch (e) {
       console.error(
-        "Error occurred while attempting to log events to logging system:"
+        'Error occurred while attempting to log events to logging system:'
       );
       console.error(e);
     }
@@ -40,10 +40,12 @@ export default class Logger {
    * @returns `Promise` for completing the async action.
    */
   async log(message: string, logLevel: LogLevel, logData?: Bag): Promise<void> {
-    const eventMessage = Object.assign(
-      { message, logLevel, loggerName: this.loggerName },
-      logData
-    );
+    const eventMessage = {
+      message,
+      logLevel,
+      loggerName: this.loggerName,
+      ...logData
+    };
 
     await this.logEvents([
       {
@@ -59,7 +61,7 @@ export default class Logger {
         name,
         description,
         value,
-        service: "logs-service",
+        service: 'logs-service',
       })
     );
   }

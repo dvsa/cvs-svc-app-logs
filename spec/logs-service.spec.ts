@@ -1,14 +1,14 @@
-import * as supertest from "supertest";
+import supertest from 'supertest';
 import {
   startSlsOffline,
   stopSlsOffline,
-} from "./helpers/integration-test-lifecycle";
+} from './helpers/integration-test-lifecycle';
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
+jest.setTimeout(30000);
 
-const request = supertest("http://localhost:3000");
+const request = supertest('http://localhost:3000');
 
-describe("integration test", () => {
+describe('integration test', () => {
   beforeAll((done) => {
     startSlsOffline((err: any) => {
       if (err) {
@@ -23,12 +23,13 @@ describe("integration test", () => {
     stopSlsOffline();
   });
 
-  it("should respond 200 for a successful post", (done) => {
+  // eslint-disable-next-line jest/expect-expect
+  it('should respond 200 for a successful post', (done) => {
     request
-      .post("/logs")
+      .post('/logs')
       .send({
         timestamp: new Date().getTime(),
-        message: "Test error message",
+        message: 'Test error message',
       })
       .expect(200)
       .end((err) => {
@@ -37,9 +38,10 @@ describe("integration test", () => {
       });
   });
 
-  it("should respond 400 for a bad request", (done) => {
+  // eslint-disable-next-line jest/expect-expect
+  it('should respond 400 for a bad request', (done) => {
     request
-      .post("/logs")
+      .post('/logs')
       .expect(400)
       .end((err) => {
         if (err) throw err;
