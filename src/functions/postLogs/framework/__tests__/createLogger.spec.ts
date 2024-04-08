@@ -17,12 +17,7 @@ describe("logging", () => {
         originalConsoleLog(message, ...optionalParams)
       );
 
-
     spyOn(console, "log").and.callFake(moqConsoleLog.object);
-  });
-
-  afterEach(() => {
-
   });
 
   describe("createLogger", () => {
