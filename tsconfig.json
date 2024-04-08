@@ -7,7 +7,8 @@
     "lib": ["es2017", "dom"],
     "target": "es5",
     "types": ["node", "jasmine"],
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "skipLibCheck": true
   },
   "include": ["./src/**/*", "./spec/**/*"],
   "exclude": ["node_modules"]
