@@ -10,7 +10,7 @@
     "url": "git+https://github.com/dvsa/cvs-svc-app-logs.git"
   },
   "dependencies": {
-    "aws-sdk": "^2.1436.0",
+    "aws-sdk": "^2.1587.0",
     "moment": "^2.29.4"
   },
   "engines": {
