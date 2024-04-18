@@ -4,6 +4,7 @@ provider:
   name: aws
   runtime: nodejs18.x
   lambdaHashingVersion: "20201221"
+  region: ${env:AWS_PROVIDER_REGION, 'local'}
 
 package:
   individually: true
