@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-cloudwatch-logs": "3.540.0",
-    "moment": "^2.29.4"
+    "moment": "^2.30.1"
   },
   "engines": {
     "node": "18.*",
