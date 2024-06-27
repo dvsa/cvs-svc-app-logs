@@ -38,3 +38,9 @@ npm test
 ```
 
 Please refer to the the [docs](./docs/README.md) for the API specification and samples of postman requests.
+
+If the tests return a credentials error, check `~/.aws/credentials` has dummy values set up 
+```
+AWS_ACCESS_KEY_ID=some_value
+AWS_SECRET_ACCESS_KEY=some_value
+```
