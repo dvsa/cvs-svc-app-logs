@@ -8,7 +8,7 @@ export const startSlsOffline = (done: any) => {
   slsOfflineProcess.stdout?.pipe(process.stdout);
 
   console.log(
-    `Serverless: Offline started with PID : ${slsOfflineProcess.pid}`
+    `Serverless: Offline started with PID : ${slsOfflineProcess.pid}`,
   );
 
   slsOfflineProcess.stdout?.on("data", (data) => {

@@ -1,4 +1,8 @@
-import { CloudWatchLogsClient, CreateLogStreamCommand, PutLogEventsCommand } from "@aws-sdk/client-cloudwatch-logs";
+import {
+  CloudWatchLogsClient,
+  CreateLogStreamCommand,
+  PutLogEventsCommand,
+} from "@aws-sdk/client-cloudwatch-logs";
 import { mockClient } from "aws-sdk-client-mock";
 import { Mock, It, Times } from "typemoq";
 import * as logger from "../createLogger";
@@ -14,7 +18,7 @@ describe("logging", () => {
     moqConsoleLog
       .setup((x) => x(It.isAny(), It.isAny()))
       .callback((message?: any, ...optionalParams: any[]) =>
-        originalConsoleLog(message, ...optionalParams)
+        originalConsoleLog(message, ...optionalParams),
       );
 
     spyOn(console, "log").and.callFake(moqConsoleLog.object);
@@ -38,14 +42,16 @@ describe("logging", () => {
       moqConsoleLog.verify(
         (x) =>
           x(It.is<string>((s) => s.indexOf(initialisedConsoleLogging) !== -1)),
-        Times.once()
+        Times.once(),
       );
       moqConsoleLog.verify(
         (x) =>
           x(
-            It.is<string>((s) => s.indexOf(initialisedCloudWatchLogging) !== -1)
+            It.is<string>(
+              (s) => s.indexOf(initialisedCloudWatchLogging) !== -1,
+            ),
           ),
-        Times.never()
+        Times.never(),
       );
     });
 
@@ -62,14 +68,16 @@ describe("logging", () => {
       moqConsoleLog.verify(
         (x) =>
           x(It.is<string>((s) => s.indexOf(initialisedConsoleLogging) !== -1)),
-        Times.never()
+        Times.never(),
       );
       moqConsoleLog.verify(
         (x) =>
           x(
-            It.is<string>((s) => s.indexOf(initialisedCloudWatchLogging) !== -1)
+            It.is<string>(
+              (s) => s.indexOf(initialisedCloudWatchLogging) !== -1,
+            ),
           ),
-        Times.once()
+        Times.once(),
       );
     });
   });
@@ -80,43 +88,62 @@ describe("logging", () => {
     it("creates a log delegate that logs to CloudWatch", async () => {
       const mockCloudWatchClient = mockClient(CloudWatchLogsClient);
       mockCloudWatchClient.on(CreateLogStreamCommand).resolves({});
-      mockCloudWatchClient.on(PutLogEventsCommand).resolves({ nextSequenceToken: "123" });
+      mockCloudWatchClient
+        .on(PutLogEventsCommand)
+        .resolves({ nextSequenceToken: "123" });
 
       const result: LogDelegate = await sut(
         "testLoggerName",
-        "testLogGroupName"
+        "testLogGroupName",
       );
       await result([
         { timestamp: 265473, message: "test log message to cloudwatch" },
       ]);
 
-      const putLogEventsStub = mockCloudWatchClient.commandCalls(PutLogEventsCommand);
+      const putLogEventsStub =
+        mockCloudWatchClient.commandCalls(PutLogEventsCommand);
 
-      expect(putLogEventsStub[0].args[0].input).toEqual(jasmine.objectContaining({
-        logGroupName: "testLogGroupName",
-      }));
-      expect(putLogEventsStub[0].args[0].input.logStreamName).toContain("testLoggerName");
-      expect(putLogEventsStub[0].args[0].input.logEvents).toEqual([{"timestamp":265473,"message":"test log message to cloudwatch"}]);
+      expect(putLogEventsStub[0].args[0].input).toEqual(
+        jasmine.objectContaining({
+          logGroupName: "testLogGroupName",
+        }),
+      );
+      expect(putLogEventsStub[0].args[0].input.logStreamName).toContain(
+        "testLoggerName",
+      );
+      expect(putLogEventsStub[0].args[0].input.logEvents).toEqual([
+        { timestamp: 265473, message: "test log message to cloudwatch" },
+      ]);
     });
 
     it("should call the `createLogStream` CloudWatchLogs method correctly", async () => {
       const mockCloudWatchClient = mockClient(CloudWatchLogsClient);
       mockCloudWatchClient.on(CreateLogStreamCommand).resolves({});
-      mockCloudWatchClient.on(PutLogEventsCommand).resolves({ nextSequenceToken: "123" });
+      mockCloudWatchClient
+        .on(PutLogEventsCommand)
+        .resolves({ nextSequenceToken: "123" });
 
       await sut("testLoggerName", "testLogGroupName");
-      const createLogEventsStub = mockCloudWatchClient.commandCalls(CreateLogStreamCommand);
+      const createLogEventsStub = mockCloudWatchClient.commandCalls(
+        CreateLogStreamCommand,
+      );
 
-      expect(createLogEventsStub[0].args[0].input).toEqual(jasmine.objectContaining({
-        logGroupName: "testLogGroupName",
-      }));
-      expect(createLogEventsStub[0].args[0].input.logStreamName).toContain("testLoggerName");
+      expect(createLogEventsStub[0].args[0].input).toEqual(
+        jasmine.objectContaining({
+          logGroupName: "testLogGroupName",
+        }),
+      );
+      expect(createLogEventsStub[0].args[0].input.logStreamName).toContain(
+        "testLoggerName",
+      );
     });
 
     it("should use `sequenceToken` from previous `putLogEvents` result", async () => {
       const mockCloudWatchClient = mockClient(CloudWatchLogsClient);
       mockCloudWatchClient.on(CreateLogStreamCommand).resolves({});
-      mockCloudWatchClient.on(PutLogEventsCommand).resolves({ nextSequenceToken: "example-sequenceToken-123" });
+      mockCloudWatchClient
+        .on(PutLogEventsCommand)
+        .resolves({ nextSequenceToken: "example-sequenceToken-123" });
 
       const result = await sut("testLoggerName", "testLogGroupName");
       await result([
@@ -125,18 +152,27 @@ describe("logging", () => {
       await result([
         { timestamp: 2, message: "test log message to cloudwatch 2" },
       ]);
-      const putLogEventsStub = mockCloudWatchClient.commandCalls(PutLogEventsCommand);
+      const putLogEventsStub =
+        mockCloudWatchClient.commandCalls(PutLogEventsCommand);
 
-      expect(putLogEventsStub[0].args[0].input.logEvents).toEqual([{ timestamp: 1, message: "test log message to cloudwatch 1" }]);
+      expect(putLogEventsStub[0].args[0].input.logEvents).toEqual([
+        { timestamp: 1, message: "test log message to cloudwatch 1" },
+      ]);
       expect(putLogEventsStub[0].args[0].input.sequenceToken).toBeUndefined();
 
-      expect(putLogEventsStub[1].args[0].input.logEvents).toEqual([{ timestamp: 2, message: "test log message to cloudwatch 2" }]);
-      expect(putLogEventsStub[1].args[0].input.sequenceToken).toEqual("example-sequenceToken-123");
+      expect(putLogEventsStub[1].args[0].input.logEvents).toEqual([
+        { timestamp: 2, message: "test log message to cloudwatch 2" },
+      ]);
+      expect(putLogEventsStub[1].args[0].input.sequenceToken).toEqual(
+        "example-sequenceToken-123",
+      );
     });
 
     it("should swallow a `ResourceAlreadyExistsException` error", async () => {
       const mockCloudWatchClient = mockClient(CloudWatchLogsClient);
-      mockCloudWatchClient.on(CreateLogStreamCommand).rejects({name: "ResourceAlreadyExistsException"});
+      mockCloudWatchClient
+        .on(CreateLogStreamCommand)
+        .rejects({ name: "ResourceAlreadyExistsException" });
 
       const result = await sut("testLoggerName", "testLogGroupName");
 
@@ -144,9 +180,10 @@ describe("logging", () => {
     });
 
     it("should throw on any other exceptions", async () => {
-
       const mockCloudWatchClient = mockClient(CloudWatchLogsClient);
-      mockCloudWatchClient.on(CreateLogStreamCommand).rejects({name: "SomeOtherException"});
+      mockCloudWatchClient
+        .on(CreateLogStreamCommand)
+        .rejects({ name: "SomeOtherException" });
 
       let errorThrown: any | undefined = undefined;
       let wasErrorThrown = false;
@@ -178,10 +215,10 @@ describe("logging", () => {
           x(
             It.is<string>((s) => /testLoggerName:/.test(s)),
             It.is<any>((args) =>
-              /^an example log message$/.test(args[0].message)
-            )
+              /^an example log message$/.test(args[0].message),
+            ),
           ),
-        Times.once()
+        Times.once(),
       );
     });
   });

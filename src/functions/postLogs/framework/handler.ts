@@ -10,12 +10,12 @@ let logger: Logger | null = null;
 
 export async function handler(
   event: APIGatewayProxyEvent,
-  fnCtx: Context
+  fnCtx: Context,
 ): Promise<Response> {
   if (logger === null) {
     logger = await createLogger(
       "LogsServiceLogger",
-      process.env.MOBILE_APP_LOGS_CWLG_NAME
+      process.env.MOBILE_APP_LOGS_CWLG_NAME,
     );
   }
 
@@ -36,7 +36,7 @@ export async function handler(
       message:
         "Bad Request: request body should contain JSON array of log messages.",
     },
-    400
+    400,
   );
 }
 

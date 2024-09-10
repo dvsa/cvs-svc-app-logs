@@ -1,0 +1,1 @@
+npm run security-checks && npm run audit && npm run lint:fix && npm run format

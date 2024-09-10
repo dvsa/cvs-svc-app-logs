@@ -1,4 +1,8 @@
-import { CloudWatchLogsClient, CreateLogStreamCommand, PutLogEventsCommand } from "@aws-sdk/client-cloudwatch-logs";
+import {
+  CloudWatchLogsClient,
+  CreateLogStreamCommand,
+  PutLogEventsCommand,
+} from "@aws-sdk/client-cloudwatch-logs";
 import { randomBytes } from "crypto";
 import LogEvent from "../application/LogEvent";
 import Logger, { LogDelegate } from "../application/Logger";
@@ -20,19 +24,20 @@ function ignoreResourceAlreadyExistsException(err: any) {
 
 export async function createCloudWatchLogger(
   loggerName: string,
-  logGroupName: string
+  logGroupName: string,
 ): Promise<LogDelegate> {
   const client = new CloudWatchLogsClient();
   const logStreamName = uniqueLogStreamName(loggerName);
-  const input = { // CreateLogStreamRequest
+  const input = {
+    // CreateLogStreamRequest
     logGroupName: logGroupName,
-    logStreamName: logStreamName
+    logStreamName: logStreamName,
   };
 
   const command = new CreateLogStreamCommand(input);
   try {
     await client.send(command);
-  } catch(err) {
+  } catch (err) {
     ignoreResourceAlreadyExistsException(err);
   }
 
@@ -51,7 +56,7 @@ export async function createCloudWatchLogger(
   };
 
   console.log(
-    `Initialised Custom CloudWatch logging to: ${logGroupName}/${logStreamName}`
+    `Initialised Custom CloudWatch logging to: ${logGroupName}/${logStreamName}`,
   );
   return cloudWatchLogger;
 }
@@ -70,7 +75,7 @@ export function createConsoleLogger(loggerName: string): LogDelegate {
  */
 export async function createLogger(
   loggerName: string,
-  cloudWatchLogGroupName: string | undefined
+  cloudWatchLogGroupName: string | undefined,
 ): Promise<Logger> {
   // If the `cloudWatchLogGroupName` variable is set then log to that CloudWatch log group.
   // This is also used to indicate we are running in the infrastructure, so the Amazon SDK will

@@ -20,7 +20,7 @@ describe("Logger", () => {
       // ASSERT
       moqLogDelegate.verify(
         (x) => x(It.is<LogEvent[]>((evnts) => evnts.length === 3)),
-        Times.once()
+        Times.once(),
       );
     });
 
@@ -39,17 +39,17 @@ describe("Logger", () => {
       moqConsoleError.verify(
         (x) =>
           x("Error occurred while attempting to log events to logging system:"),
-        Times.once()
+        Times.once(),
       );
 
       moqConsoleError.verify(
         (x) =>
           x(
             It.is<Error>(
-              (e) => e.message === "example external logging system error"
-            )
+              (e) => e.message === "example external logging system error",
+            ),
           ),
-        Times.once()
+        Times.once(),
       );
     });
   });
@@ -70,10 +70,10 @@ describe("Logger", () => {
                 evnts[0].timestamp <= new Date().getTime() &&
                 /test log message/.test(evnts[0].message) &&
                 /info/.test(evnts[0].message) &&
-                /1234/.test(evnts[0].message)
-            )
+                /1234/.test(evnts[0].message),
+            ),
           ),
-        Times.once()
+        Times.once(),
       );
     });
 
@@ -90,10 +90,10 @@ describe("Logger", () => {
                 evnts.length === 1 &&
                 /test log message/.test(evnts[0].message) &&
                 !/info/.test(evnts[0].message) &&
-                /other/.test(evnts[0].message)
-            )
+                /other/.test(evnts[0].message),
+            ),
           ),
-        Times.once()
+        Times.once(),
       );
     });
   });

@@ -2,7 +2,7 @@ import LogEvent from "../application/LogEvent";
 import LogMessage from "./LogMessage";
 
 export default function transformLogMessages(
-  logMessages: LogMessage[] | LogMessage
+  logMessages: LogMessage[] | LogMessage,
 ): LogEvent[] {
   return (
     logMessages
