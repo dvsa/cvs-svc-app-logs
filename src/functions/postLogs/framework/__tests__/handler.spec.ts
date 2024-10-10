@@ -1,4 +1,4 @@
-import { HttpStatus } from "./../../../../common/application/api/HttpStatus";
+import { HttpStatus } from "@dvsa/cvs-microservice-common/api/http-status-codes";
 import { Mock, It, Times } from "typemoq";
 import { APIGatewayProxyEvent, Context } from "aws-lambda";
 import * as createLogger from "../createLogger";
