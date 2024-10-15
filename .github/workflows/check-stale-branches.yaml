@@ -20,8 +20,7 @@ permissions:
 jobs:
   collect-stale-branches:
     name: Collect Stale branches
-    runs-on: 
-      - cvs-github-actions
+    runs-on: X64
     steps:
       - name: checkout
         uses: actions/checkout@v4
