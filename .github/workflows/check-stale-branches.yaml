@@ -1,0 +1,31 @@
+name: 👀 Collect Stale Environments
+
+run-name: 👀 Collect Stale Environments 👾 ${{ github.actor }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Dont perform, just output information
+        type: boolean
+        default: false
+
+permissions:
+  id-token: write
+  contents: write
+
+jobs:
+  collect-stale-branches:
+    name: Collect Stale branches
+    runs-on: 
+      - cvs-github-actions
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: List all branches 
+        run: |
+          gh api \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            /repos/dvsa/cvs-service-tester/branches --jq '.[].name | select(test("^(main|master|release|develop|devops|HEAD)$") | not)'
