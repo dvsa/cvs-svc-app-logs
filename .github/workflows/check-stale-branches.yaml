@@ -3,12 +3,15 @@ name: 👀 Collect Stale Environments
 run-name: 👀 Collect Stale Environments 👾 ${{ github.actor }}
 
 on:
-  workflow_dispatch:
-    inputs:
-      dry_run:
-        description: Dont perform, just output information
-        type: boolean
-        default: false
+  push:
+    branches:
+        - feature/CB2-11814
+#   workflow_dispatch:
+#     inputs:
+#       dry_run:
+#         description: Dont perform, just output information
+#         type: boolean
+#         default: false
 
 permissions:
   id-token: write
