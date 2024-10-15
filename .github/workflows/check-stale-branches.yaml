@@ -20,6 +20,8 @@ permissions:
 jobs:
   collect-stale-branches:
     name: Collect Stale branches
+    env:
+     GH_TOKEN: ${{ secrets.GH_TOKEN }}
     runs-on: X64
     steps:
       - name: checkout
