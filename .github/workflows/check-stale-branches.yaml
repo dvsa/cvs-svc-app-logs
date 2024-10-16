@@ -47,11 +47,8 @@ jobs:
 
       - name: Get commit dates older than 3 months for each branch
         run: |
-            echo "Checking commits for branch: $branch"
-
-            # Fetch the full commit history for the branch to check dates
-            commit_dates=$(gh api \
-              -H "Accept: application/vnd.github+json" \
-              -H "X-GitHub-Api-Version: 2022-11-28" \
-              /repos/dvsa/cvs-svc-app-logs/commits?sha=$branch \
-              --jq '.[].commit.committer.date' 2>/dev/null)
+          commit_dates=$(gh api \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            /repos/dvsa/cvs-svc-app-logs/commits?sha=$branch \
+            --jq '.[].commit.committer.date' 2>/dev/null)
