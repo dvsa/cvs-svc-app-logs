@@ -51,4 +51,4 @@ jobs:
             -H "Accept: application/vnd.github+json" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
             /repos/dvsa/cvs-svc-app-logs/commits?sha=$branch \
-            --jq '.[].commit.committer.date' 2>/dev/null)
+            --jq '.[].commit.committer.date' 2>/dev/null
