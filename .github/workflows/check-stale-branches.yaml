@@ -47,25 +47,7 @@ jobs:
 
       - name: Get list of commit dates for each branch
         run: |
-            page=1
-            per_page=100
-            commits=()
-
-            while true; do
-              commit_response=$(gh api \
-                -H "Accept: application/vnd.github+json" \
-                -H "X-GitHub-Api-Version: 2022-11-28" \
-                /repos/dvsa/cvs-s/commits/$branch?per_page=$per_page\&page=$page \
-                --jq '[.[] | .commit.committer.date]')
-              
-              if [[ -z "$commit_response" ]]; then
-                break  # Exit loop if no more commit results
-              fi
-
-              commits+=($commit_response)
-              ((page++))
-            done
-
-            # Output commit dates for the current branch
-            echo "Commit dates for branch $branch:"
-            printf "%s\n" "${commits[@]}"
+          gh api \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            /repos/dvsa/cvs-service-tester/commits --jq '.commit.committer.date' | date
