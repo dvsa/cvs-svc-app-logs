@@ -28,8 +28,6 @@ jobs:
           branches=()
 
           while true; do
-            echo "Fetching branches - page $page"
-
             response=$(gh api \
               -H "Accept: application/vnd.github+json" \
               -H "X-GitHub-Api-Version: 2022-11-28" \
@@ -37,54 +35,37 @@ jobs:
               --jq '.[].name | select(test("^(main|master|release|develop|devops|HEAD)$") | not)')
             
             if [[ -z "$response" ]]; then
-              echo "No more branches found. Exiting loop."
-              break
+              break  # Exit loop if no more results
             fi
 
-            # Add the current page's branches to the array
-            while read -r branch; do
-              branches+=("$branch")
-            done <<< "$response"
-
+            branches+=($response)
             ((page++))
           done
 
           # Output all branches
-          echo "Total branches found: ${#branches[@]}"
           printf "%s\n" "${branches[@]}"
 
       - name: Get list of commit dates for each branch
         run: |
-          for branch in "${branches[@]}"; do
-            echo "Getting commits for branch: $branch"
-            
             page=1
             per_page=100
             commits=()
 
             while true; do
-              echo "Fetching commits for branch $branch - page $page"
-
               commit_response=$(gh api \
                 -H "Accept: application/vnd.github+json" \
                 -H "X-GitHub-Api-Version: 2022-11-28" \
-                /repos/dvsa/cvs-service-tester/commits/$branch?per_page=$per_page\&page=$page \
+                /repos/dvsa/cvs-s/commits/$branch?per_page=$per_page\&page=$page \
                 --jq '[.[] | .commit.committer.date]')
               
               if [[ -z "$commit_response" ]]; then
-                echo "No more commits found for branch $branch. Exiting loop."
-                break
+                break  # Exit loop if no more commit results
               fi
 
-              # Add commit dates to the array
-              while read -r commit_date; do
-                commits+=("$commit_date")
-              done <<< "$commit_response"
-
+              commits+=($commit_response)
               ((page++))
             done
 
             # Output commit dates for the current branch
             echo "Commit dates for branch $branch:"
             printf "%s\n" "${commits[@]}"
-          done
