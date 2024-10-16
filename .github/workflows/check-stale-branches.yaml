@@ -47,8 +47,27 @@ jobs:
 
       - name: Get commit dates older than 3 months for each branch
         run: |
-          gh api \
-            -H "Accept: application/vnd.github+json" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            /repos/dvsa/cvs-svc-app-logs/commits?sha=$branch \
-            --jq '.[].commit.committer.date' 2>/dev/null
+          # Get the current date in seconds since epoch
+          current_date=$(date +%s)
+
+          # Get the date 3 months ago in seconds since epoch
+          three_months_ago=$(date -d '3 months ago' +%s)
+
+          # Fetch commit dates for the branch
+          commit_dates=$(gh api \
+              -H "Accept: application/vnd.github+json" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              /repos/dvsa/cvs-svc-app-logs/commits?sha=$branch \
+              --jq '.[].commit.committer.date' 2>/dev/null)
+
+          # Check each commit date and determine if it's 3 months old or older
+          while IFS= read -r commit_date; do
+              # Convert commit date to seconds since epoch
+              commit_date_seconds=$(date -d "$commit_date" +%s)
+            
+              # Check if commit date is older than 3 months
+              if [[ $commit_date_seconds -lt $three_months_ago ]]; then
+                  echo "Branch $branch has commits older than 3 months: $commit_date"
+              fi
+          done <<< "$commit_dates"
+
