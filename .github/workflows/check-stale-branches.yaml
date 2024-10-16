@@ -47,7 +47,7 @@ jobs:
 
       - name: Get commit dates older than 3 months for each branch
         run: |
-          commit_dates=$(gh api \
+          gh api \
             -H "Accept: application/vnd.github+json" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
             /repos/dvsa/cvs-svc-app-logs/commits?sha=$branch \
