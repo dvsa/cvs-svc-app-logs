@@ -42,8 +42,8 @@ jobs:
             ((page++))
           done
 
-          # Output all branches
-          printf "%s\n" "${branches[@]}"
+          # Output all branches for debugging
+          echo "Fetched branches: ${branches[@]}"
 
       - name: Get commit dates older than 3 months for each branch
         run: |
@@ -62,6 +62,9 @@ jobs:
               -H "X-GitHub-Api-Version: 2022-11-28" \
               /repos/dvsa/cvs-svc-app-logs/commits/$branch --jq '.commit.committer.date' 2>/dev/null || echo "")
 
+            # Debug: Show latest commit date retrieved
+            echo "Latest commit date for branch $branch: $latest_commit_date"
+
             if [[ -z "$latest_commit_date" ]]; then
               echo "No commits found for branch $branch."
               continue
@@ -69,6 +72,9 @@ jobs:
             
             # Parse commit date (from ISO 8601 to YYYY-MM-DD)
             commit_date=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "$latest_commit_date" "+%Y-%m-%d" 2>/dev/null || echo "")
+            
+            # Debug: Show parsed commit date
+            echo "Parsed commit date for branch $branch: $commit_date"
 
             # If the commit date couldn't be parsed, skip
             if [[ -z "$commit_date" ]]; then
