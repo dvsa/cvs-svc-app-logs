@@ -28,6 +28,8 @@ jobs:
           branches=()
 
           while true; do
+            echo "Fetching branches - page $page"
+
             response=$(gh api \
               -H "Accept: application/vnd.github+json" \
               -H "X-GitHub-Api-Version: 2022-11-28" \
@@ -35,14 +37,20 @@ jobs:
               --jq '.[].name | select(test("^(main|master|release|develop|devops|HEAD)$") | not)')
             
             if [[ -z "$response" ]]; then
-              break  # Exit loop if no more results
+              echo "No more branches found. Exiting loop."
+              break
             fi
 
-            branches+=($response)
+            # Add the current page's branches to the array
+            while read -r branch; do
+              branches+=("$branch")
+            done <<< "$response"
+
             ((page++))
           done
 
           # Output all branches
+          echo "Total branches found: ${#branches[@]}"
           printf "%s\n" "${branches[@]}"
 
       - name: Get list of commit dates for each branch
@@ -55,17 +63,24 @@ jobs:
             commits=()
 
             while true; do
+              echo "Fetching commits for branch $branch - page $page"
+
               commit_response=$(gh api \
                 -H "Accept: application/vnd.github+json" \
                 -H "X-GitHub-Api-Version: 2022-11-28" \
-                /repos/dvsa/cvs-svc-app-logs/commits/$branch?per_page=$per_page\&page=$page \
+                /repos/dvsa/cvs-service-tester/commits/$branch?per_page=$per_page\&page=$page \
                 --jq '[.[] | .commit.committer.date]')
               
               if [[ -z "$commit_response" ]]; then
-                break  # Exit loop if no more commit results
+                echo "No more commits found for branch $branch. Exiting loop."
+                break
               fi
 
-              commits+=($commit_response)
+              # Add commit dates to the array
+              while read -r commit_date; do
+                commits+=("$commit_date")
+              done <<< "$commit_response"
+
               ((page++))
             done
 
