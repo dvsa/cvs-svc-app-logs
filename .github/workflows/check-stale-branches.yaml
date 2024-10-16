@@ -47,7 +47,7 @@ jobs:
 
       - name: Get commit dates older than 3 months for each branch
         run: |
-          three_months_ago=$(date -d "3 months ago" +%Y-%m-%d)
+          three_months_ago=$(date -v -3m +%Y-%m-%d)
           for branch in "${branches[@]}"; do
             echo "Checking commits for branch: $branch"
             
