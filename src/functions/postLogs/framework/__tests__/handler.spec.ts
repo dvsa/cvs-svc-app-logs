@@ -1,4 +1,4 @@
-import { HttpStatus } from "./../../../../common/application/api/HttpStatus";
+import { HttpStatus } from "@dvsa/cvs-microservice-common/api/http-status-codes";
 import { Mock, It, Times } from "typemoq";
 import { APIGatewayProxyEvent, Context } from "aws-lambda";
 import * as createLogger from "../createLogger";
@@ -41,7 +41,7 @@ describe("handler", () => {
     // ASSERT
     moqCreateLogger.verify(
       (x) => x("LogsServiceLogger", "example-mobile-app-cwlg-name"),
-      Times.once()
+      Times.once(),
     );
   });
 
@@ -56,7 +56,7 @@ describe("handler", () => {
     expect(result.statusCode).toEqual(400);
     expect(result.statusCode).toEqual(HttpStatus.BAD_REQUEST);
     expect(result.body).toMatch(
-      /Bad Request: request body should contain JSON array of log messages/
+      /Bad Request: request body should contain JSON array of log messages/,
     );
   });
 
@@ -71,7 +71,7 @@ describe("handler", () => {
     expect(result.statusCode).toEqual(400);
     expect(result.statusCode).toEqual(HttpStatus.BAD_REQUEST);
     expect(result.body).toMatch(
-      /Bad Request: request body should contain JSON array of log messages/
+      /Bad Request: request body should contain JSON array of log messages/,
     );
   });
 
@@ -80,10 +80,10 @@ describe("handler", () => {
     moqEvent.setup((x) => x.body).returns(() => "{}");
 
     const moqTransformLogMessages = Mock.ofInstance(
-      transformLogMessages.default
+      transformLogMessages.default,
     );
     spyOn(transformLogMessages, "default").and.callFake(
-      moqTransformLogMessages.object
+      moqTransformLogMessages.object,
     );
 
     moqTransformLogMessages
@@ -97,7 +97,7 @@ describe("handler", () => {
     expect(result.statusCode).toEqual(200);
     moqLogger.verify(
       (x) => x.logEvents(It.is<LogEvent[]>((evnts) => evnts.length === 12)),
-      Times.once()
+      Times.once(),
     );
     moqTransformLogMessages.verify((x) => x(It.isAny()), Times.once());
     expect(result.body).toMatch(/12 log messages were received and saved./);
