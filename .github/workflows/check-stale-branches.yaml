@@ -22,6 +22,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: List all branches with pagination
+        id: branches
         run: |
           page=1
           per_page=100
@@ -45,16 +46,15 @@ jobs:
           # Output all branches for debugging
           echo "Fetched branches: ${branches[@]}"
 
-      - name: Get commit dates older than 3 months for each branch
+      - name: Get commit dates older than stale branch threshold
         run: |
-          # Get the current date in seconds since epoch
-          current_date=$(date -u +%s)
+          # Use the environment variable for grace period, default to 3 months if not set
+          stale_threshold=${{ env.stale-branch-threshold || '3m' }}
 
-          # Calculate the date three months ago in seconds since epoch
-          three_months_ago=$(date -u -v-3m +%s)
+          # Get the date that is 'stale_threshold' ago
+          three_months_ago=$(date -u -v-"$stale_threshold" +%s)
 
-          # Loop through each branch to get commit dates
-          for branch in "${branches[@]}"; do
+          for branch in $(jq -r '.[]' <<< '${{ steps.branches.outputs.branches }}'); do
               # Fetch commit dates for the branch
               commit_dates=$(gh api \
                   -H "Accept: application/vnd.github+json" \
@@ -62,14 +62,14 @@ jobs:
                   /repos/dvsa/cvs-svc-app-logs/commits?sha=$branch \
                   --jq '.[].commit.committer.date' 2>/dev/null)
 
-              # Check each commit date and determine if it's 3 months old or older
               while IFS= read -r commit_date; do
-                  # Convert commit date to seconds since epoch using -j and -f for formatting
+                  # Convert commit date to seconds since epoch
                   commit_date_seconds=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "$commit_date" +%s)
-                
-                  # Check if commit date is older than 3 months
+
                   if [[ $commit_date_seconds -lt $three_months_ago ]]; then
-                      echo "Branch $branch has commits older than 3 months: $commit_date"
+                      echo "Branch $branch has commits older than $stale_threshold: $commit_date"
                   fi
               done <<< "$commit_dates"
           done
+        env:
+          stale-branch-threshold: "3m" 
