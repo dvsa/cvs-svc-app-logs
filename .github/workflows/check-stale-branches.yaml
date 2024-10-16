@@ -48,10 +48,9 @@ jobs:
       - name: Get commit dates older than 3 months for each branch
         run: |
           # Get the current date in seconds since epoch
-          current_date=$(date +%s)
+          current_date=$(date -u +%s)
 
-          # Get the date 3 months ago in seconds since epoch
-          three_months_ago=$(date -d '3 months ago' +%s)
+          three_months_ago=$(date -u -v-3m +%s)
 
           # Fetch commit dates for the branch
           commit_dates=$(gh api \
