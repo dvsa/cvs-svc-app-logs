@@ -41,7 +41,7 @@ jobs:
             ((page++))
           done
        
-          branches_json=$(printf '%s\n' "${branches[@]}" | jq -R . | jq -s .)
+          branches_json=$(printf '%s\n' "${branches[@]}" | jq -R . | jq -s . | jq 'map(select(length > 0))')
 
           echo "branches=$branches_json" >> $GITHUB_OUTPUT
 
