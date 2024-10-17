@@ -42,9 +42,11 @@ jobs:
           done
        
           branches_json=$(printf '%s\n' "${branches[@]}" | jq -R . | jq -s .)
-          
-          echo "::set-output name=branches::$(echo $branches_json | jq -c)" 
 
+          echo "Fetched branches: $branches_json"
+
+          echo "branches=$(echo $branches_json | jq -c)" >> $GITHUB_ENV
+          
     #   - name: Get commit dates older than stale branch threshold
     #     env:
     #       stale-branch-threshold: "3m" 
