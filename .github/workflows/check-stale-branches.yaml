@@ -18,7 +18,7 @@ jobs:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
     runs-on: X64
     steps:
-      - name: Checkout
+      - name: checkout
         uses: actions/checkout@v4
 
       - name: List all branches with pagination
@@ -27,7 +27,6 @@ jobs:
           page=1
           per_page=100
           branches=()
-
           while true; do
             response=$(gh api \
               -H "Accept: application/vnd.github+json" \
@@ -38,32 +37,31 @@ jobs:
             if [[ -z "$response" ]]; then
               break  # Exit loop if no more results
             fi
-
             branches+=($response)
             ((page++))
           done
+       
+          branches_json=$(printf '%s\n' "${branches[@]}" | jq -R . | jq -s .)
 
-          # Output all branches for debugging
-          echo "Fetched branches: ${branches[@]}"
+          echo "branches=$branches_json" >> $GITHUB_OUTPUT
 
-      - name: Get commit dates older than stale branch threshold
-        env:
-          stale-branch-threshold: "3m" 
-        run: |
-          three_months_ago=$(date -v-${{ env.stale-branch-threshold }})
+    #   - name: Get commit dates older than stale branch threshold
+    #     env:
+    #       stale-branch-threshold: "3m" 
+    #     run: |
+    #       three_months_ago=$(date -v-${{ env.stale-branch-threshold }})
 
-          for branch in $(jq -r '.[]' <<< '${{ steps.branches.outputs.branches }}'); do
-              # Fetch commit dates for the branch
-              commit_dates=$(gh api \
-                  -H "Accept: application/vnd.github+json" \
-                  -H "X-GitHub-Api-Version: 2022-11-28" \
-                  /repos/dvsa/cvs-svc-app-logs/commits?sha=$branch \
-                  --jq '.[].commit.committer.date' 2>/dev/null)
+    #       for branch in $(jq -r '.[]' <<< '${{ steps.branches.outputs.branches }}'); do
+    #           # Fetch commit dates for the branch
+    #           commit_dates=$(gh api \
+    #               -H "Accept: application/vnd.github+json" \
+    #               -H "X-GitHub-Api-Version: 2022-11-28" \
+    #               /repos/dvsa/cvs-svc-app-logs/commits?sha=$branch \
+    #               --jq '.[].commit.committer.date' 2>/dev/null)
 
-                for commit_date in $commit_dates; do
-                    # Compare the commit date string with the threshold date
-                    if [[ "$commit_date" < "$stale_threshold" ]]; then
-                        echo "Branch $branch has commits older than $stale_threshold: $commit_date"
-                    fi
-                done
-            done
+    #             for commit_date in $commit_dates; do
+    #                 if [[ "$commit_date" < "$stale_threshold" ]]; then
+    #                     echo "Branch $branch has commits older than $stale_threshold: $commit_date"
+    #                 fi
+    #             done
+    #         done
