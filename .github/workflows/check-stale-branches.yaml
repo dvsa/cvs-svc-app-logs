@@ -47,12 +47,11 @@ jobs:
           echo "Fetched branches: ${branches[@]}"
 
       - name: Get commit dates older than stale branch threshold
+        env:
+          stale-branch-threshold: "3m" 
         run: |
-          # Use the environment variable for grace period, default to 3 months if not set
-          stale_threshold=${{ env.stale-branch-threshold || '3m' }}
-
           # Get the date that is 'stale_threshold' ago
-          three_months_ago=$(date -u -v-"$stale_threshold" +%s)
+          three_months_ago=$(date -v-${{ env.stale-branch-threshold }})
 
           for branch in $(jq -r '.[]' <<< '${{ steps.branches.outputs.branches }}'); do
               # Fetch commit dates for the branch
@@ -62,14 +61,13 @@ jobs:
                   /repos/dvsa/cvs-svc-app-logs/commits?sha=$branch \
                   --jq '.[].commit.committer.date' 2>/dev/null)
 
-              while IFS= read -r commit_date; do
-                  # Convert commit date to seconds since epoch
-                  commit_date_seconds=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "$commit_date" +%s)
+        #       while IFS= read -r commit_date; do
+        #           # Convert commit date to seconds since epoch
+        #           commit_date_seconds=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "$commit_date" +%s)
 
-                  if [[ $commit_date_seconds -lt $three_months_ago ]]; then
-                      echo "Branch $branch has commits older than $stale_threshold: $commit_date"
-                  fi
-              done <<< "$commit_dates"
-          done
-        env:
-          stale-branch-threshold: "3m" 
+        #           if [[ $commit_date_seconds -lt $three_months_ago ]]; then
+        #               echo "Branch $branch has commits older than $stale_threshold: $commit_date"
+        #           fi
+        #       done <<< "$commit_dates"
+        #   done
+       
