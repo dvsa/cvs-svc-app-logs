@@ -50,7 +50,6 @@ jobs:
         env:
           stale-branch-threshold: "3m" 
         run: |
-          # Get the date that is 'stale_threshold' ago
           three_months_ago=$(date -v-${{ env.stale-branch-threshold }})
 
           for branch in $(jq -r '.[]' <<< '${{ steps.branches.outputs.branches }}'); do
@@ -61,13 +60,10 @@ jobs:
                   /repos/dvsa/cvs-svc-app-logs/commits?sha=$branch \
                   --jq '.[].commit.committer.date' 2>/dev/null)
 
-        #       while IFS= read -r commit_date; do
-        #           # Convert commit date to seconds since epoch
-        #           commit_date_seconds=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "$commit_date" +%s)
-
-        #           if [[ $commit_date_seconds -lt $three_months_ago ]]; then
-        #               echo "Branch $branch has commits older than $stale_threshold: $commit_date"
-        #           fi
-        #       done <<< "$commit_dates"
-        #   done
-       
+                for commit_date in $commit_dates; do
+                    # Compare the commit date string with the threshold date
+                    if [[ "$commit_date" < "$stale_threshold" ]]; then
+                        echo "Branch $branch has commits older than $stale_threshold: $commit_date"
+                    fi
+                done
+            done
