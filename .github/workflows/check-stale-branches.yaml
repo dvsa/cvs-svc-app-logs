@@ -32,7 +32,7 @@ jobs:
               -H "Accept: application/vnd.github+json" \
               -H "X-GitHub-Api-Version: 2022-11-28" \
               /repos/dvsa/cvs-svc-app-logs/branches?per_page=$per_page\&page=$page \
-              --jq '.[].name | select(test("^(main|master|release|develop|devops|HEAD)$") | not)')
+              --jq '.[].name | select(test("^(main|master|release/|develop|devops|HEAD)$") | not)')
             
             if [[ -z "$response" ]]; then
               break  # Exit loop if no more results
@@ -46,7 +46,7 @@ jobs:
           echo "Fetched branches: $branches_json"
 
           echo "branches=$(echo $branches_json | jq -c)" >> $GITHUB_ENV
-          
+
     #   - name: Get commit dates older than stale branch threshold
     #     env:
     #       stale-branch-threshold: "3m" 
