@@ -49,6 +49,8 @@ jobs:
 
       - name: Test Fetch Commit Dates
         run: |
+            branches=${{ steps.branches.outputs.branches }}
+
             # Loop through each branch to fetch commit dates
             for branch in $(jq -r '.[]' <<< "$branches"); do
                 commit_dates=$(gh api \
