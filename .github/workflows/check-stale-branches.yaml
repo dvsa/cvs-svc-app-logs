@@ -44,13 +44,15 @@ jobs:
           branches_json=$(printf '%s\n' "${branches[@]}" | jq -R . | jq -s .)
 
           echo "Fetched branches: $branches_json"
-          
+
           echo "branches=$(echo $branches_json | jq -c)" >> $GITHUB_OUTPUT
 
       - name: Test Fetch Commit Dates for All Branches
         run: |
           # Use the branches output from the previous step
           branches=${{ steps.branches.outputs.branches }}
+
+          echo "Raw branches output: $branches"
 
           # Loop through each branch to fetch commit dates
           for branch in $(jq -r '.[]' <<< "$branches"); do
