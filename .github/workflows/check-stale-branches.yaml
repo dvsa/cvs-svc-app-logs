@@ -47,23 +47,23 @@ jobs:
 
           echo "branches=$(echo $branches_json | jq -c)" >> $GITHUB_ENV
 
-    #   - name: Get commit dates older than stale branch threshold
-    #     env:
-    #       stale-branch-threshold: "3m" 
-    #     run: |
-    #       three_months_ago=$(date -v-${{ env.stale-branch-threshold }})
+      - name: Get commit dates older than stale branch threshold
+        env:
+          stale-branch-threshold: "3m" 
+        run: |
+          three_months_ago=$(date -v-${{ env.stale-branch-threshold }})
 
-    #       for branch in $(jq -r '.[]' <<< '${{ steps.branches.outputs.branches }}'); do
-    #           # Fetch commit dates for the branch
-    #           commit_dates=$(gh api \
-    #               -H "Accept: application/vnd.github+json" \
-    #               -H "X-GitHub-Api-Version: 2022-11-28" \
-    #               /repos/dvsa/cvs-svc-app-logs/commits?sha=$branch \
-    #               --jq '.[].commit.committer.date' 2>/dev/null)
+          for branch in $(jq -r '.[]' <<< '${{ steps.branches.outputs.branches }}'); do
+              # Fetch commit dates for the branch
+              commit_dates=$(gh api \
+                  -H "Accept: application/vnd.github+json" \
+                  -H "X-GitHub-Api-Version: 2022-11-28" \
+                  /repos/dvsa/cvs-svc-app-logs/commits?sha=$branch \
+                  --jq '.[].commit.committer.date' 2>/dev/null)
 
-    #             for commit_date in $commit_dates; do
-    #                 if [[ "$commit_date" < "$stale_threshold" ]]; then
-    #                     echo "Branch $branch has commits older than $stale_threshold: $commit_date"
-    #                 fi
-    #             done
-    #         done
+                for commit_date in $commit_dates; do
+                    if [[ "$commit_date" < "$stale_threshold" ]]; then
+                        echo "Branch $branch has commits older than $stale_threshold: $commit_date"
+                    fi
+                done
+            done
