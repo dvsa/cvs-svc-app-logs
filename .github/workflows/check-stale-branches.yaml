@@ -45,22 +45,43 @@ jobs:
 
           echo "Fetched branches: $branches_json"
 
-          echo "branches=$(echo $branches_json | jq -c)" >> $GITHUB_ENV
+          echo "branches=$(echo $branches_json | jq -c)" >> $GITHUB_OUTPUT
 
-      - name: Get commit dates older than stale branch threshold
-        env:
-          stale-branch-threshold: "3m"
+      - name: Test Fetch Commit Dates
         run: |
-          three_months_ago=$(date -v-${{ env.stale-branch-threshold }} '+%Y-%m-%d')
+            # Example branches array for testing (replace with actual branches output)
+            branches='["feature/CB2-11814"]'
 
-          echo "Branches: $branches"
+            # Loop through each branch to fetch commit dates
+            for branch in $(jq -r '.[]' <<< "$branches"); do
+                # Fetch commit dates for the branch
+                commit_dates=$(gh api \
+                    -H "Accept: application/vnd.github+json" \
+                    -H "X-GitHub-Api-Version: 2022-11-28" \
+                    /repos/dvsa/cvs-svc-app-logs/commits?sha="$branch" \
+                    --jq '.[].commit.committer.date' 2>/dev/null)
 
-          for branch in $(jq -r '.[]' <<< '${{ steps.branches.outputs.branches }}'); do
-              # Search commits in the branch where the author date is older than 3 months
-              commits=$(gh search commits --author-date="<${three_months_ago}" --repo dvsa/cvs-svc-app-logs --branch $branch --limit 100 --json commit,committerDate --jq '.[] | "\(.commit.oid) \(.committerDate)"')
+                # Print commit dates
+                echo "Commit dates for branch $branch:"
+                echo "$commit_dates"
 
-              if [ -n "$commits" ]; then
-                  echo "Branch $branch has commits older than $three_months_ago:"
-                  echo "$commits"
-              fi
-          done
+            done
+
+    #   - name: Get commit dates older than stale branch threshold
+    #     env:
+    #       stale-branch-threshold: "3m" 
+    #     run: |
+    #       three_months_ago=$(date -v-${{ env.stale-branch-threshold }})
+
+    #       for branch in $(jq -r '.[]' <<< '${{ steps.branches.outputs.branches }}'); do
+    #           # Fetch commit dates for the branch
+    #           commit_dates=$(gh api \
+    #               -H "Accept: application/vnd.github+json" \
+    #               -H "X-GitHub-Api-Version: 2022-11-28" \
+    #               /repos/dvsa/cvs-svc-app-logs/commits?sha=$branch \
+    #               --jq '.[].commit.committer.date' 2>/dev/null)
+
+    #             for commit_date in $commit_dates; do
+    #               [ $($commit_date | date) < $(date -v-${{ env.stale-branch-threshold }}) ] && echo "New Commit"
+
+    #             done
