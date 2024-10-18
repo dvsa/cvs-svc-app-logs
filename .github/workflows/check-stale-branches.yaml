@@ -61,3 +61,9 @@ jobs:
                   /repos/dvsa/cvs-svc-app-logs/commits?sha=$branch \
                   --jq '.[].commit.committer.date' 2>/dev/null)
 
+                for commit_date in $commit_dates; do
+                    if [[ "$commit_date" < "$three_months_ago" ]]; then
+                        echo "Branch $branch has commits older than $three_months_ago=: $commit_date"
+                    fi
+                done
+            done
