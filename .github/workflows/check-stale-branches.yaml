@@ -49,12 +49,8 @@ jobs:
 
       - name: Test Fetch Commit Dates
         run: |
-            # Example branches array for testing (replace with actual branches output)
-            branches='["feature/CB2-11814"]'
-
             # Loop through each branch to fetch commit dates
             for branch in $(jq -r '.[]' <<< "$branches"); do
-                # Fetch commit dates for the branch
                 commit_dates=$(gh api \
                     -H "Accept: application/vnd.github+json" \
                     -H "X-GitHub-Api-Version: 2022-11-28" \
@@ -74,7 +70,6 @@ jobs:
     #       three_months_ago=$(date -v-${{ env.stale-branch-threshold }})
 
     #       for branch in $(jq -r '.[]' <<< '${{ steps.branches.outputs.branches }}'); do
-    #           # Fetch commit dates for the branch
     #           commit_dates=$(gh api \
     #               -H "Accept: application/vnd.github+json" \
     #               -H "X-GitHub-Api-Version: 2022-11-28" \
