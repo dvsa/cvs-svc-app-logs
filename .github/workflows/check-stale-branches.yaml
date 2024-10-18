@@ -53,6 +53,8 @@ jobs:
         run: |
           three_months_ago=$(date -v-${{ env.stale-branch-threshold }} '+%Y-%m-%d')
 
+          echo "Branches: $branches"
+
           for branch in $(jq -r '.[]' <<< '${{ steps.branches.outputs.branches }}'); do
               # Search commits in the branch where the author date is older than 3 months
               commits=$(gh search commits --author-date="<${three_months_ago}" --repo dvsa/cvs-svc-app-logs --branch $branch --limit 100 --json commit,committerDate --jq '.[] | "\(.commit.oid) \(.committerDate)"')
