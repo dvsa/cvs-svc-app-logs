@@ -45,6 +45,7 @@ jobs:
           echo "branches=$(echo $branches_json | jq -c)" >> $GITHUB_OUTPUT
 
       - name: Test Fetch Commit Dates for All Branches
+        id: stale_branches
         run: |
           ninety_days_ago=$(date -v -90d +%s)
           for branch in $(jq -r '.[]' <<< '${{ steps.branches.outputs.branches }}'); do
@@ -64,3 +65,11 @@ jobs:
                 echo "$branch is compliant"
             fi
           done
+
+          stale_branches_json=$(printf '%s\n' "${stale_branches[@]}" | jq -R . | jq -s .)
+          echo "stale_branches=$(echo $stale_branches_json | jq -c)" >> $GITHUB_OUTPUT
+
+      - name: Debug Stale Branches JSON
+        run: |
+          echo "Stale branches JSON output:"
+          echo "${{ steps.stale_branches.outputs.stale_branches }}"
