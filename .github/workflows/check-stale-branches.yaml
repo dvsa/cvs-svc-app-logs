@@ -50,11 +50,12 @@ jobs:
           for branch in $(jq -r '.[]' <<< '${{ steps.branches.outputs.branches }}'); do
               commit_dates=$(gh api -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" \
                   /repos/dvsa/cvs-svc-app-logs/commits?sha="$branch" --jq '.[].commit.committer.date' 2>/dev/null)
+            # Get last commit for this branch
+            last_commit_date=$(gh api repos/$GITHUB_REPOSITORY/branches/$branch --jq '.commit.commit | .author.date')
 
-            for commit_date in $commit_dates; do
-              epoch=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "$commit_date" +"%s")
-              if [ "$epoch" -lt "$ninety_days_ago" ]; then
-                echo "Commit: $branch is stale, it is older than 90 Days"
-              fi
-            done
+            # convert to epoch time
+            epoch=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "$last_commit_date" +"%s")
+
+            # Print if it is stale or compliant
+            [ "$epoch" -lt "$ninety_days_ago" ] && echo "$branch is stale" || echo "$branch is compliant"
           done
