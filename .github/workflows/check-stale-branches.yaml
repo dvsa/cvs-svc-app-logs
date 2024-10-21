@@ -35,7 +35,7 @@ jobs:
               --jq '.[].name | select(test("^(main|master|develop|devops|HEAD)$|^(release/.*)$") | not)')
             
             if [[ -z "$response" ]]; then
-              break  # Exit loop if no more results
+              break
             fi
             branches+=($response)
             ((page++))
@@ -48,8 +48,6 @@ jobs:
           echo "branches=$(echo $branches_json | jq -c)" >> $GITHUB_OUTPUT
 
       - name: Test Fetch Commit Dates for All Branches
-        # env:
-        #   stale-branch-threshold: "3m"
         run: |
         
           for branch in $(jq -r '.[]' <<< '${{ steps.branches.outputs.branches }}'); do
@@ -60,29 +58,10 @@ jobs:
                   --jq '.[].commit.committer.date' 2>/dev/null)
 
                  for commit_date in $commit_dates; do
-                 [ $($commit_date | date) < $(date -v-3m) ] && echo "New Commit"
+                 [ ($commit_date | date) < $(date -v-3m) ] && echo "New Commit"
                  done
 
               # Print commit dates
               echo "Commit dates for branch $branch:"
               echo "$commit_dates"
           done
-
-
-    #   - name: Get commit dates older than stale branch threshold
-    #     env:
-    #       stale-branch-threshold: "3m" 
-    #     run: |
-    #       three_months_ago=$(date -v-${{ env.stale-branch-threshold }})
-
-    #       for branch in $(jq -r '.[]' <<< '${{ steps.branches.outputs.branches }}'); do
-    #           commit_dates=$(gh api \
-    #               -H "Accept: application/vnd.github+json" \
-    #               -H "X-GitHub-Api-Version: 2022-11-28" \
-    #               /repos/dvsa/cvs-svc-app-logs/commits?sha=$branch \
-    #               --jq '.[].commit.committer.date' 2>/dev/null)
-
-    #             for commit_date in $commit_dates; do
-    #               [ $($commit_date | date) < $(date -v-${{ env.stale-branch-threshold }}) ] && echo "New Commit"
-
-    #             done
