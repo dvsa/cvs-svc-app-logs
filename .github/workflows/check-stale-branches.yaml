@@ -49,14 +49,20 @@ jobs:
 
       - name: Test Fetch Commit Dates for All Branches
         run: |
+          timeago='90 days ago'
           for branch in $(jq -r '.[]' <<< '${{ steps.branches.outputs.branches }}'); do
               commit_dates=$(gh api -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" \
                   /repos/dvsa/cvs-svc-app-logs/commits?sha="$branch" --jq '.[].commit.committer.date' 2>/dev/null)
 
-                 for commit_date in $commit_dates; do
-                   # [ ("$commit_date" | date) < "$(date -v-3m)" ] && echo "New Commit"
-                   echo "$commit_date"
-                 done
+              for commit_date in $commit_dates; do
+                dtSec=$(date --date "$" +'%s')
+                taSec=$(date --date "$timeago" +'%s')
+                echo "INFO: dtSec=$dtSec, taSec=$taSec" >&2
+
+                [ $dtSec -lt $taSec ] && "echo too old"
+                   # # [ ("$commit_date" | date) < "$(date -v-3m)" ] && echo "New Commit"
+                   # echo "$commit_date"
+              done
 
               # Print commit dates
               # echo "Commit dates for branch $branch:"
