@@ -65,11 +65,12 @@ jobs:
             fi
           done
 
-          stale_branches_json=$(printf '%s\n' "${stale_branches[@]}" | jq -R . | jq -s .)
+          echo "Stale branches: ${stale_branches[*]}" > stale_branches.txt
 
-          echo "stale_branches=$(echo $stale_branches_json | jq -c)" >> $GITHUB_OUTPUT
+          echo "stale_branches=$(cat stale_branches.txt)" >> $GITHUB_ENV
 
       - name: Collect stale branches
         run: |
-          echo "Stale branches: ${{ steps.fetch_commit_dates.outputs.stale_branches }}"
+          echo "Stale branches:"
+          cat stale_branches.txt
         
