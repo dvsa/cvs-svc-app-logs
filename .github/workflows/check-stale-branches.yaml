@@ -43,21 +43,20 @@ jobs:
        
           branches_json=$(printf '%s\n' "${branches[@]}" | jq -R . | jq -s .)
 
-          echo "Fetched branches: $branches_json"
+          # echo "Fetched branches: $branches_json"
 
           echo "branches=$(echo $branches_json | jq -c)" >> $GITHUB_OUTPUT
 
       - name: Test Fetch Commit Dates for All Branches
         run: |
-        
           for branch in $(jq -r '.[]' <<< '${{ steps.branches.outputs.branches }}'); do
               commit_dates=$(gh api -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" \
                   /repos/dvsa/cvs-svc-app-logs/commits?sha="$branch" --jq '.[].commit.committer.date' 2>/dev/null)
 
               echo "$commit_dates"
-                 # for commit_date in $commit_dates; do
-                 # [ ($commit_date | date) < $(date -v-3m) ] && echo "New Commit"
-                 # done
+                 for commit_date in $commit_dates; do
+                   [ ("$commit_date" | date) < "$(date -v-3m)" ] && echo "New Commit"
+                 done
 
               # Print commit dates
               # echo "Commit dates for branch $branch:"
