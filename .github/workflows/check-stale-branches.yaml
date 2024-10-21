@@ -45,6 +45,7 @@ jobs:
           echo "branches=$(echo $branches_json | jq -c)" >> $GITHUB_OUTPUT
 
       - name: Test Fetch Commit Dates for All Branches
+        id: fetch_commit_dates
         run: |
           ninety_days_ago=$(date -v -90d +%s)
           for branch in $(jq -r '.[]' <<< '${{ steps.branches.outputs.branches }}'); do
@@ -56,6 +57,19 @@ jobs:
             # convert to epoch time
             epoch=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "$last_commit_date" +"%s")
 
-            # Print if it is stale or compliant
-            [ "$epoch" -lt "$ninety_days_ago" ] && echo "$branch is stale" || echo "$branch is compliant"
+            if [ "$epoch" -lt "$ninety_days_ago" ]; then
+              echo "$branch is stale"
+              stale_branches+=("$branch")
+            else
+              echo "$branch is compliant"
+            fi
           done
+
+          stale_branches_json=$(printf '%s\n' "${stale_branches[@]}" | jq -R . | jq -s .)
+
+          echo "stale_branches=$(echo $stale_branches_json | jq -c)" >> $GITHUB_OUTPUT
+
+      - name: Collect stale branches
+        run: |
+          echo "Stale branches: ${{ steps.fetch_commit_dates.outputs.stale_branches }}"
+        
