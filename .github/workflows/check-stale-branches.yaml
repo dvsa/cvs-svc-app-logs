@@ -72,4 +72,4 @@ jobs:
       - name: Debug Stale Branches JSON
         run: |
           echo "Stale branches JSON output:"
-          echo "${{ steps.stale_branches.outputs.stale_branches }}" | jq .
+          echo "${{ steps.stale_branches.outputs.stale_branches }}" | jq -r '.[]'
