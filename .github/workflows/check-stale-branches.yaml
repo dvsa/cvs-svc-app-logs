@@ -55,7 +55,7 @@ jobs:
                   /repos/dvsa/cvs-svc-app-logs/commits?sha="$branch" --jq '.[].commit.committer.date' 2>/dev/null)
 
               for commit_date in $commit_dates; do
-                dtSec=$(date --date "$" +'%s')
+                dtSec=$(date --date "$commit_date" +'%s')
                 taSec=$(date --date "$timeago" +'%s')
                 echo "INFO: dtSec=$dtSec, taSec=$taSec" >&2
 
