@@ -52,7 +52,7 @@ jobs:
                   /repos/dvsa/cvs-svc-app-logs/commits?sha="$branch" --jq '.[].commit.committer.date' 2>/dev/null)
 
             for commit_date in $commit_dates; do
-              epoch='$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "$commit_date" +"%s")'
+              epoch=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "$commit_date" +"%s")
               if [ "$epoch" -lt "$ninety_days_ago" ]; then
                 echo "Commit: $branch is stale, it is older than 90 Days"
               fi
