@@ -56,9 +56,9 @@ jobs:
             # convert to epoch time
             epoch=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "$last_commit_date" +"%s")
 
-            # Check if branch is stale or compliant
+            # Check if the branch is stale
             if [ "$epoch" -lt "$ninety_days_ago" ]; then
-                echo "$branch" >> $GITHUB_OUTPUT
+                echo "$branch is stale"
                 stale_branches+=("$branch")
             else
                 echo "$branch is compliant"
