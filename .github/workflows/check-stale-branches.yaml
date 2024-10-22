@@ -91,3 +91,7 @@ jobs:
         with:
           name: active_branches-json
           path: active_branches.json
+
+      - name: Save Run ID as Repository Variable
+        run: |
+          gh variable set ACTIVE_BRANCH_RUN -b "${{ github.run_id }}"
