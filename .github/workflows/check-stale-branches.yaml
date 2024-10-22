@@ -50,7 +50,7 @@ jobs:
 
           echo "$branches_json" > branches.json
           
-          echo "branches=$(cat branches.json)" >> $GITHUB_OUTPUT
+          echo "branches=$(echo $branches_json | jq -c)" >> $GITHUB_OUTPUT
 
       - name: Upload branches JSON as artifact
         uses: actions/upload-artifact@v3
