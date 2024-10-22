@@ -81,9 +81,13 @@ jobs:
           done
 
           stale_branches_json=$(printf '%s\n' "${stale_branches[@]}" | jq -R . | jq -s .)
+
+          echo "$stale_branches_json" > stale_branches.json
+
           echo "stale_branches=$(echo $stale_branches_json | jq -c)" >> $GITHUB_OUTPUT
 
-      - name: Output Stale Branches JSON
-        run: |
-          echo "Stale branches JSON output:"
-          echo '${{ steps.stale_branches.outputs.stale_branches }}'
+      - name: Upload branches JSON as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: stale_branches-json
+          path: stale_branches.json
