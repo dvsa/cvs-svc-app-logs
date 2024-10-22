@@ -61,7 +61,7 @@ jobs:
       - name: Test Fetch Commit Dates for All Branches
         id: stale_branches
         run: |
-          thirty_days_ago=$(date -v -30d +%s)
+          active_cutoff=$(date -v -30d +%s)
           for branch in $(jq -r '.[]' <<< '${{ steps.branches.outputs.branches }}'); do
               commit_dates=$(gh api -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" \
                   /repos/dvsa/cvs-svc-app-logs/commits?sha="$branch" --jq '.[].commit.committer.date' 2>/dev/null)
@@ -72,7 +72,7 @@ jobs:
             epoch=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "$last_commit_date" +"%s")
 
             # Check if the branch is stale
-            if [ "$epoch" -lt "$ninety_days_ago" ]; then
+            if [ "$epoch" -lt "$active_cutoff" ]; then
                 echo "$branch is active"
                 active_branches+=("$branch")
             else
