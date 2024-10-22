@@ -72,7 +72,7 @@ jobs:
             epoch=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "$last_commit_date" +"%s")
 
             # Check if the branch is stale
-            if [ "$epoch" -lt "$active_cutoff" ]; then
+            if [ "$epoch" -ge "$active_cutoff" ]; then
                 echo "$branch is active"
                 active_branches+=("$branch")
             else
