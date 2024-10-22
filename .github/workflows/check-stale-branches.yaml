@@ -61,7 +61,7 @@ jobs:
       - name: Test Fetch Commit Dates for All Branches
         id: stale_branches
         run: |
-          ninety_days_ago=$(date -v -90d +%s)
+          thirty_days_ago=$(date -v -30d +%s)
           for branch in $(jq -r '.[]' <<< '${{ steps.branches.outputs.branches }}'); do
               commit_dates=$(gh api -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" \
                   /repos/dvsa/cvs-svc-app-logs/commits?sha="$branch" --jq '.[].commit.committer.date' 2>/dev/null)
@@ -73,21 +73,21 @@ jobs:
 
             # Check if the branch is stale
             if [ "$epoch" -lt "$ninety_days_ago" ]; then
-                echo "$branch is stale"
-                stale_branches+=("$branch")
+                echo "$branch is active"
+                active_branches+=("$branch")
             else
-                echo "$branch is compliant"
+                echo "$branch is stale"
             fi
           done
 
-          stale_branches_json=$(printf '%s\n' "${stale_branches[@]}" | jq -R . | jq -s .)
+          active_branches_json=$(printf '%s\n' "${active_branches[@]}" | jq -R . | jq -s .)
 
-          echo "$stale_branches_json" > stale_branches.json
+          echo "$active_branches_json" > active_branches.json
 
-          echo "stale_branches=$(echo $stale_branches_json | jq -c)" >> $GITHUB_OUTPUT
+          echo "active_branches=$(echo $active_branches_json | jq -c)" >> $GITHUB_OUTPUT
 
       - name: Upload branches JSON as artifact
         uses: actions/upload-artifact@v3
         with:
-          name: stale_branches-json
-          path: stale_branches.json
+          name: active_branches-json
+          path: active_branches.json
