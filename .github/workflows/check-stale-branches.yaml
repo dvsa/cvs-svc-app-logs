@@ -84,7 +84,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: stale-branches
-          path: *branches.json
+          path: |
+            *branches.json
 
       - name: Set GitHub Run ID as a Repository Variable
         run: |
