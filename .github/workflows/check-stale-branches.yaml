@@ -52,12 +52,6 @@ jobs:
           
           echo "branches=$(echo $branches_json | jq -c)" >> $GITHUB_OUTPUT
 
-      - name: Upload branches JSON as artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: branches-json
-          path: branches.json
-
       - name: Test Fetch Commit Dates for All Branches
         id: stale_branches
         run: |
@@ -86,21 +80,22 @@ jobs:
 
           echo "active_branches=$(echo $active_branches_json | jq -c)" >> $GITHUB_OUTPUT
 
-      - name: Upload branches JSON as artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: active_branches-json
-          path: active_branches.json
-
-      - name: Save Run ID as Repository Variable
+      - name: Create directory to hold JSON files
         run: |
-          gh variable set ACTIVE_BRANCH_RUN -b "${{ github.run_id }}" > active_branch_run_ID.txt
+          mkdir -p branch-artifacts
+          mv branches.json branch-artifacts/
+          mv active_branches.json branch-artifacts/
 
-      - name: Upload run ID as artifact
+      - name: Upload both JSON files as a single artifact
         uses: actions/upload-artifact@v3
         with:
-          name: active-branch-run-artifact
-          path: active_branch_run_ID.txt
+          name: branch-artifacts
+          path: branch-artifacts/
 
-      - name: debug artifact
-        run: cat active_branch_run_ID.txt
+      - name: Set GitHub Run ID as an Environment Variable
+        run: |
+          echo "RUN_ID=${{ github.run_id }}" >> $GITHUB_ENV
+          
+      - name: Print the Run ID
+        run: |
+          echo "The Run ID is: $RUN_ID"
