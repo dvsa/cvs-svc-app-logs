@@ -95,3 +95,9 @@ jobs:
       - name: Save Run ID as Repository Variable
         run: |
           gh variable set ACTIVE_BRANCH_RUN -b "${{ github.run_id }}"
+
+      - name: Upload run ID as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: active-branch-run-artifact
+          path: active_branch_run_ID.txt
