@@ -101,3 +101,6 @@ jobs:
         with:
           name: active-branch-run-artifact
           path: active_branch_run_ID.txt
+
+      - name: debug artifact
+        run: cat active_branch_run_ID.txt
