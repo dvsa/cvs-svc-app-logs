@@ -83,7 +83,7 @@ jobs:
       - name: Upload both JSON files as a single artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ github.repository }}
+          name: stale-branches-${{ github.repository }}
           path: |
             *branches.json 
 
