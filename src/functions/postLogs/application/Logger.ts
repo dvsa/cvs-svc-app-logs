@@ -25,7 +25,7 @@ export default class Logger {
       await this.logDelegate(logEvents);
     } catch (e) {
       console.error(
-        "Error occurred while attempting to log events to logging system:"
+        "Error occurred while attempting to log events to logging system:",
       );
       console.error(e);
     }
@@ -42,7 +42,7 @@ export default class Logger {
   async log(message: string, logLevel: LogLevel, logData?: Bag): Promise<void> {
     const eventMessage = Object.assign(
       { message, logLevel, loggerName: this.loggerName },
-      logData
+      logData,
     );
 
     await this.logEvents([
@@ -60,7 +60,7 @@ export default class Logger {
         description,
         value,
         service: "logs-service",
-      })
+      }),
     );
   }
 }

@@ -24,3 +24,5 @@ artefacts
 
 # Idea specific hidden files
 .idea/**
+
+reports/
