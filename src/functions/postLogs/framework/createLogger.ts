@@ -1,4 +1,8 @@
-import { CloudWatchLogs } from "aws-sdk";
+import {
+  CloudWatchLogsClient,
+  CreateLogStreamCommand,
+  PutLogEventsCommand,
+} from "@aws-sdk/client-cloudwatch-logs";
 import { randomBytes } from "crypto";
 import LogEvent from "../application/LogEvent";
 import Logger, { LogDelegate } from "../application/Logger";
@@ -13,40 +17,46 @@ export function uniqueLogStreamName(loggerName: string): string {
 }
 
 function ignoreResourceAlreadyExistsException(err: any) {
-  if ((err.errorType || err.code) !== "ResourceAlreadyExistsException") {
+  if ((err.errorType || err.name) !== "ResourceAlreadyExistsException") {
     throw err;
   }
 }
 
 export async function createCloudWatchLogger(
   loggerName: string,
-  logGroupName: string
+  logGroupName: string,
 ): Promise<LogDelegate> {
-  const cloudWatchLogs = new CloudWatchLogs();
+  const client = new CloudWatchLogsClient();
   const logStreamName = uniqueLogStreamName(loggerName);
+  const input = {
+    // CreateLogStreamRequest
+    logGroupName: logGroupName,
+    logStreamName: logStreamName,
+  };
 
-  await cloudWatchLogs
-    .createLogStream({ logGroupName, logStreamName })
-    .promise()
-    .catch(ignoreResourceAlreadyExistsException);
+  const command = new CreateLogStreamCommand(input);
+  try {
+    await client.send(command);
+  } catch (err) {
+    ignoreResourceAlreadyExistsException(err);
+  }
 
-  let sequenceToken: CloudWatchLogs.SequenceToken | undefined = undefined;
+  let sequenceToken: string | undefined = undefined;
 
   const cloudWatchLogger = async (logEvents: LogEvent[]) => {
-    const logResult = await cloudWatchLogs
-      .putLogEvents({
-        logEvents,
-        logGroupName,
-        logStreamName,
-        sequenceToken,
-      })
-      .promise();
-
-    sequenceToken = logResult.nextSequenceToken;
+    const input = {
+      logGroupName: logGroupName,
+      logStreamName: logStreamName,
+      logEvents: logEvents,
+      sequenceToken: sequenceToken,
+    };
+    const command = new PutLogEventsCommand(input);
+    const logResult = await client.send(command);
+    sequenceToken = logResult.nextSequenceToken; //nextSequenceToken is deprecated
   };
 
   console.log(
-    `Initialised Custom CloudWatch logging to: ${logGroupName}/${logStreamName}`
+    `Initialised Custom CloudWatch logging to: ${logGroupName}/${logStreamName}`,
   );
   return cloudWatchLogger;
 }
@@ -65,7 +75,7 @@ export function createConsoleLogger(loggerName: string): LogDelegate {
  */
 export async function createLogger(
   loggerName: string,
-  cloudWatchLogGroupName: string | undefined
+  cloudWatchLogGroupName: string | undefined,
 ): Promise<Logger> {
   // If the `cloudWatchLogGroupName` variable is set then log to that CloudWatch log group.
   // This is also used to indicate we are running in the infrastructure, so the Amazon SDK will
